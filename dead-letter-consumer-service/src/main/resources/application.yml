@@ -6,25 +6,23 @@ spring:
     password: guest
     listener:
       simple:
-#        retry:
-#          enabled: true
-#          initial-interval: 3s
-#          max-attempts: 5
-#          max-interval: 10s
-#          multiplier: 2
         default-requeue-rejected: false
-         
+        acknowledge-mode: manual
 server:
   port: 8081
+logging:
+  level:
+    root: INFO
+
 app:
   rabbitmq:
-    create-vdc-queue: VIRTUALCARD_CREATE_VDC
-    create-vdc-queue-retry: VIRTUALCARD_CREATE_VDC_RETRY
-    create-vdc-queue-error: VIRTUALCARD_CREATE_VDC_ERROR
+    create-vdc-queue: VIRTUALCARD_REQUEST
+    create-vdc-queue-retry: VIRTUALCARD_REQUEST_RETRY
 
     fee-charge-queue: VIRTUALCARD_FEE_CHARGE
     fee-charge-queue-retry: VIRTUALCARD_FEE_CHARGE_RETRY
-    fee-charge-queue-error: VIRTUALCARD_FEE_CHARGE_ERROR
-    
+
+    error-vdc-queue: VIRTUALCARD_VDC_ERROR
+    error-vdc-queue-retry: VIRTUALCARD_VDC_ERROR_RETRY
+
     exchange: VIRTUALCARD_EXCHANGE
-    exchange_error: VIRTUALCARD_EXCHANGE_ERROR         

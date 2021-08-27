@@ -3,27 +3,36 @@ spring:
     host: localhost
     port: 5672  
     username: guest
-    password: guest             
+    password: guest
+    publisher-confirm-type: correlated
+    publisher-returns: true
+    template:
+      mandatory: true
+    connection-timeout: 10000
+    requested-heartbeat: 10
+    listener:
+      simple:
+        default-requeue-rejected: false
+        acknowledge-mode: manual
   thymeleaf:
     cache: false
   main:
-    show-banner: false
-logging: 
+    banner-mode: off
+
+logging:
   level:
-    jdbc: 
-      sqltiming: DEBUG
-      resultsettable: DEBUG
-    
+    root: INFO
+
 app:
   rabbitmq:
-    create-vdc-queue: VIRTUALCARD_CREATE_VDC
-    create-vdc-queue-retry: VIRTUALCARD_CREATE_VDC_RETRY
-    create-vdc-queue-error: VIRTUALCARD_CREATE_VDC_ERROR
+    create-vdc-queue: VIRTUALCARD_REQUEST
+    create-vdc-queue-retry: VIRTUALCARD_REQUEST_RETRY
 
     fee-charge-queue: VIRTUALCARD_FEE_CHARGE
     fee-charge-queue-retry: VIRTUALCARD_FEE_CHARGE_RETRY
-    fee-charge-queue-error: VIRTUALCARD_FEE_CHARGE_ERROR
-    
+
+    error-vdc-queue: VIRTUALCARD_VDC_ERROR
+    error-vdc-queue-retry: VIRTUALCARD_VDC_ERROR_RETRY
+
     exchange: VIRTUALCARD_EXCHANGE
-    exchange_error: VIRTUALCARD_EXCHANGE_ERROR  
     

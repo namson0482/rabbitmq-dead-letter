@@ -1,12 +1,8 @@
 package com.javainuse.config;
 
-import org.springframework.amqp.core.AmqpTemplate;
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.DirectExchange;
-import org.springframework.amqp.core.ExchangeBuilder;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.QueueBuilder;
+import com.javainuse.config.properties.AppProperties;
+import lombok.AllArgsConstructor;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -14,123 +10,103 @@ import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.javainuse.config.properties.AppProperties;
-
-import lombok.AllArgsConstructor;
-
 @Configuration
 @AllArgsConstructor
 public class RabbitMQConfig {
-	
-	private AppProperties appProperties;
 
-//	@Bean
-//	DirectExchange deadLetterExchange() {
-//		return new DirectExchange("deadLetterExchange");
-//	}
-//
-//	@Bean
-//	Queue dlq() {
-//		return QueueBuilder.durable("deadLetterQueue").build();
-//	}
-//
-//	@Bean
-//	Queue queue() {
-//		return QueueBuilder.durable("javainuse.queue").withArgument("x-dead-letter-exchange", "deadLetterExchange")
-//				.withArgument("x-dead-letter-routing-key", "deadLetter").build();
-//	}
-//
-//	@Bean
-//	DirectExchange exchange() {
-//		return new DirectExchange("javainuse-direct-exchange");
-//	}
-//
-//	@Bean
-//	Binding DLQbinding(Queue dlq, DirectExchange deadLetterExchange) {
-//		return BindingBuilder.bind(dlq).to(deadLetterExchange).with("deadLetter");
-//	}
-//
-//	@Bean
-//	Binding binding(Queue queue, DirectExchange exchange) {
-//		return BindingBuilder.bind(queue).to(exchange).with("javainuse");
-//	}
-	
-	
-	
-	
-// Option 2	
-//	@Bean
-//    DirectExchange exchange() {
-//        return ExchangeBuilder.directExchange(appProperties.getRabbitmq().getExchange()).build();
-//    }
-//	
-//	@Bean
-//	Queue createVdcQueue() {
-//		return QueueBuilder.durable(appProperties.getRabbitmq().getCreateVdcQueue())
-//				.deadLetterExchange(appProperties.getRabbitmq().getExchange())
-//				.deadLetterRoutingKey(appProperties.getRabbitmq().getCreateVdcQueueError()).build();
-//	}
-//	
-//	@Bean
-//    Queue createVdcQueueError() {
-//        return QueueBuilder.durable(appProperties.getRabbitmq().getCreateVdcQueueError())
-//                .deadLetterExchange(appProperties.getRabbitmq().getExchange())
-//                .build();
-//    }
-//	
-//	@Bean
-//    Binding createVdcQueueBinding(Queue createVdcQueue, DirectExchange exchange) {
-//        return BindingBuilder.bind(createVdcQueue).to(exchange).withQueueName();
-//    }
-//
-//    @Bean
-//    Binding createVdcQueueErrorBinding(Queue createVdcQueueError, DirectExchange exchange) {
-//        return BindingBuilder.bind(createVdcQueueError).to(exchange).withQueueName();
-//    }
-	
-	
-	
-	
+	private final AppProperties appProperties;
+
 	@Bean
-    DirectExchange exchange() {
-        return ExchangeBuilder.directExchange(appProperties.getRabbitmq().getExchange()).build();
-    }
-	
+	DirectExchange exchange() {
+		return ExchangeBuilder.directExchange(appProperties.getRabbitmq().getExchange()).build();
+	}
+
 	@Bean
 	Queue createVdcQueue() {
 		return QueueBuilder.durable(appProperties.getRabbitmq().getCreateVdcQueue())
 				.deadLetterExchange(appProperties.getRabbitmq().getExchange())
 				.deadLetterRoutingKey(appProperties.getRabbitmq().getCreateVdcQueueRetry()).build();
 	}
-	
+
 	@Bean
 	Queue createVdcQueueRetry() {
 		return QueueBuilder.durable(appProperties.getRabbitmq().getCreateVdcQueueRetry())
 				.deadLetterExchange(appProperties.getRabbitmq().getExchange())
-				.deadLetterRoutingKey(appProperties.getRabbitmq().getCreateVdcQueue()).ttl(10000)
-	            .build();
+				.deadLetterRoutingKey(appProperties.getRabbitmq().getCreateVdcQueue())
+				.ttl(3000).build();
 	}
-	
-	@Bean
-    Queue createVdcQueueError() {
-        return new Queue(appProperties.getRabbitmq().getCreateVdcQueueError());
-    }
-	
-	@Bean
-    Binding createVdcQueueBinding(Queue createVdcQueue, DirectExchange exchange) {
-        return BindingBuilder.bind(createVdcQueue).to(exchange).withQueueName();
-    }
-	
-	@Bean
-    Binding createVdcQueueRetryBinding(Queue createVdcQueueRetry, DirectExchange exchange) {
-        return BindingBuilder.bind(createVdcQueueRetry).to(exchange).withQueueName();
-    }
 
-    @Bean
-    Binding createVdcQueueErrorBinding(Queue createVdcQueueError, DirectExchange exchange) {
-        return BindingBuilder.bind(createVdcQueueError).to(exchange).withQueueName();
-    }
-	
+	@Bean
+	Queue errorVdcQueue() {
+		return QueueBuilder.durable(appProperties.getRabbitmq().getErrorVdcQueue())
+				.deadLetterExchange(appProperties.getRabbitmq().getExchange())
+				.deadLetterRoutingKey(appProperties.getRabbitmq().getErrorVdcQueueRetry())
+				.build();
+	}
+
+	@Bean
+	Queue errorVdcQueueRetry() {
+		return QueueBuilder.durable(appProperties.getRabbitmq().getErrorVdcQueueRetry())
+				.deadLetterExchange(appProperties.getRabbitmq().getExchange())
+				.deadLetterRoutingKey(appProperties.getRabbitmq().getErrorVdcQueue())
+				.ttl(3000).build();
+	}
+
+	@Bean
+	Binding createVdcQueueBinding(Queue createVdcQueue, DirectExchange exchange) {
+		return BindingBuilder.bind(createVdcQueue).to(exchange).withQueueName();
+	}
+
+	@Bean
+	Binding createVdcQueueRetryBinding(Queue createVdcQueueRetry, DirectExchange exchange) {
+		return BindingBuilder.bind(createVdcQueueRetry).to(exchange).withQueueName();
+	}
+
+	@Bean
+	Binding errorVdcQueueBinding(Queue errorVdcQueue, DirectExchange exchange) {
+		return BindingBuilder.bind(errorVdcQueue).to(exchange).withQueueName();
+	}
+
+	@Bean
+	Binding errorVdcQueueRetryBinding(Queue errorVdcQueueRetry, DirectExchange exchange) {
+		return BindingBuilder.bind(errorVdcQueueRetry).to(exchange).withQueueName();
+	}
+
+	@Bean
+	Queue feeChargeQueue() {
+		return QueueBuilder.durable(appProperties.getRabbitmq().getFeeChargeQueue())
+				.deadLetterExchange(appProperties.getRabbitmq().getExchange())
+				.deadLetterRoutingKey(appProperties.getRabbitmq().getFeeChargeQueueRetry())
+				.build();
+	}
+
+	@Bean
+	Queue feeChargeQueueRetry() {
+		return QueueBuilder.durable(appProperties.getRabbitmq().getFeeChargeQueueRetry())
+				.deadLetterExchange(appProperties.getRabbitmq().getExchange())
+				.deadLetterRoutingKey(appProperties.getRabbitmq().getFeeChargeQueue())
+				.ttl(3000).build();
+	}
+
+	@Bean
+	Binding feeChargeQueueBinding(Queue feeChargeQueue, DirectExchange exchange) {
+		return BindingBuilder.bind(feeChargeQueue).to(exchange).withQueueName();
+	}
+
+	@Bean
+	Binding feeChargeQueueRetryBinding(Queue feeChargeQueueRetry, DirectExchange exchange) {
+		return BindingBuilder.bind(feeChargeQueueRetry).to(exchange).withQueueName();
+	}
+
+//    @Bean
+//    public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(ConnectionFactory connectionFactory) {
+//        SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
+//        factory.setConcurrentConsumers(2);
+//        factory.setMaxConcurrentConsumers(3);
+//        factory.setConnectionFactory(connectionFactory);
+//        return factory;
+//    }
+
 
 	@Bean
 	public MessageConverter jsonMessageConverter() {
