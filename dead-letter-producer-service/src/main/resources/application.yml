@@ -1,0 +1,29 @@
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672  
+    username: guest
+    password: guest             
+  thymeleaf:
+    cache: false
+  main:
+    show-banner: false
+logging: 
+  level:
+    jdbc: 
+      sqltiming: DEBUG
+      resultsettable: DEBUG
+    
+app:
+  rabbitmq:
+    create-vdc-queue: VIRTUALCARD_CREATE_VDC
+    create-vdc-queue-retry: VIRTUALCARD_CREATE_VDC_RETRY
+    create-vdc-queue-error: VIRTUALCARD_CREATE_VDC_ERROR
+
+    fee-charge-queue: VIRTUALCARD_FEE_CHARGE
+    fee-charge-queue-retry: VIRTUALCARD_FEE_CHARGE_RETRY
+    fee-charge-queue-error: VIRTUALCARD_FEE_CHARGE_ERROR
+    
+    exchange: VIRTUALCARD_EXCHANGE
+    exchange_error: VIRTUALCARD_EXCHANGE_ERROR  
+    
