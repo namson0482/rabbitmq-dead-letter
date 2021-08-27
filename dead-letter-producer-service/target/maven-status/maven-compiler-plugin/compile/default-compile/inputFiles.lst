@@ -1,0 +1,9 @@
+D:\project_intellij\rabbitmq-dead-letter\dead-letter-producer-service\src\main\java\com\javainuse\SpringBootProducerApplication.java
+D:\project_intellij\rabbitmq-dead-letter\dead-letter-producer-service\src\main\java\com\javainuse\model\CardServiceRequestDTO.java
+D:\project_intellij\rabbitmq-dead-letter\dead-letter-producer-service\src\main\java\com\javainuse\controller\RabbitMQWebController.java
+D:\project_intellij\rabbitmq-dead-letter\dead-letter-producer-service\src\main\java\com\javainuse\model\CardRequestDetail.java
+D:\project_intellij\rabbitmq-dead-letter\dead-letter-producer-service\src\main\java\com\javainuse\model\CardRequest.java
+D:\project_intellij\rabbitmq-dead-letter\dead-letter-producer-service\src\main\java\com\javainuse\model\Employee.java
+D:\project_intellij\rabbitmq-dead-letter\dead-letter-producer-service\src\main\java\com\javainuse\service\RabbitMQSender.java
+D:\project_intellij\rabbitmq-dead-letter\dead-letter-producer-service\src\main\java\com\javainuse\config\properties\AppProperties.java
+D:\project_intellij\rabbitmq-dead-letter\dead-letter-producer-service\src\main\java\com\javainuse\config\RabbitMQConfig.java
