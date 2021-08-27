@@ -11,8 +11,5 @@ RabbitMQ Dead Letter Example
 http://localhost:8080/javainuse-rabbitmq/producer?empName=emp1&empId=emp001&salary=-50
 
 
-intellij_token
-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
-
 my_token_script
-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
+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
