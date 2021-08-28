@@ -2,10 +2,16 @@
 RabbitMQ Dead Letter Example
 
 # Test
-
-
-
 1. Producer must send a message in advance. Let it create exchange and routing key. 
-2. Send request by **GET** method as URL below:
+2. Send request by **POST** method as URL below:
 
-http://localhost:8080/javainuse-rabbitmq/producer?empName=emp1&empId=emp001&salary=-50
+http://localhost:8080/javainuse-rabbitmq/card_service
+
+{
+"requestTypCd": "EXCEPTION",
+"data": {
+"REQNBR": 429,
+"REQTRACEID": "47990ce6-d3b4-4bad-8199-a6b5bc2765ae",
+"FULLNAME": "NGUYEN VU"
+}
+}
