@@ -7,7 +7,7 @@ spring:
     listener:
       simple:
         default-requeue-rejected: false
-        acknowledge-mode: manual
+        acknowledge-mode: auto
 server:
   port: 8081
 logging:
@@ -26,3 +26,6 @@ app:
     error-vdc-queue-retry: VIRTUALCARD_VDC_ERROR_RETRY
 
     exchange: VIRTUALCARD_EXCHANGE
+
+    retry: 2
+    time-to-live: 10000

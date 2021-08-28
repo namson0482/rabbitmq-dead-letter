@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 @AllArgsConstructor
 public class RabbitMQConfig {
 
-	private final AppProperties appProperties;
+	private AppProperties appProperties;
 
 	@Bean
 	DirectExchange exchange() {
@@ -33,7 +33,7 @@ public class RabbitMQConfig {
 		return QueueBuilder.durable(appProperties.getRabbitmq().getCreateVdcQueueRetry())
 				.deadLetterExchange(appProperties.getRabbitmq().getExchange())
 				.deadLetterRoutingKey(appProperties.getRabbitmq().getCreateVdcQueue())
-				.ttl(3000).build();
+				.ttl(appProperties.getRabbitmq().getTimeToLive()).build();
 	}
 
 	@Bean
@@ -49,7 +49,7 @@ public class RabbitMQConfig {
 		return QueueBuilder.durable(appProperties.getRabbitmq().getErrorVdcQueueRetry())
 				.deadLetterExchange(appProperties.getRabbitmq().getExchange())
 				.deadLetterRoutingKey(appProperties.getRabbitmq().getErrorVdcQueue())
-				.ttl(3000).build();
+				.ttl(appProperties.getRabbitmq().getTimeToLive()).build();
 	}
 
 	@Bean
@@ -72,32 +72,6 @@ public class RabbitMQConfig {
 		return BindingBuilder.bind(errorVdcQueueRetry).to(exchange).withQueueName();
 	}
 
-	@Bean
-	Queue feeChargeQueue() {
-		return QueueBuilder.durable(appProperties.getRabbitmq().getFeeChargeQueue())
-				.deadLetterExchange(appProperties.getRabbitmq().getExchange())
-				.deadLetterRoutingKey(appProperties.getRabbitmq().getFeeChargeQueueRetry())
-				.build();
-	}
-
-	@Bean
-	Queue feeChargeQueueRetry() {
-		return QueueBuilder.durable(appProperties.getRabbitmq().getFeeChargeQueueRetry())
-				.deadLetterExchange(appProperties.getRabbitmq().getExchange())
-				.deadLetterRoutingKey(appProperties.getRabbitmq().getFeeChargeQueue())
-				.ttl(3000).build();
-	}
-
-	@Bean
-	Binding feeChargeQueueBinding(Queue feeChargeQueue, DirectExchange exchange) {
-		return BindingBuilder.bind(feeChargeQueue).to(exchange).withQueueName();
-	}
-
-	@Bean
-	Binding feeChargeQueueRetryBinding(Queue feeChargeQueueRetry, DirectExchange exchange) {
-		return BindingBuilder.bind(feeChargeQueueRetry).to(exchange).withQueueName();
-	}
-
 //    @Bean
 //    public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(ConnectionFactory connectionFactory) {
 //        SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
@@ -106,7 +80,6 @@ public class RabbitMQConfig {
 //        factory.setConnectionFactory(connectionFactory);
 //        return factory;
 //    }
-
 
 	@Bean
 	public MessageConverter jsonMessageConverter() {

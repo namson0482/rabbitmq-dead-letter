@@ -13,11 +13,6 @@ spring:
     listener:
       simple:
         default-requeue-rejected: false
-        acknowledge-mode: manual
-  thymeleaf:
-    cache: false
-  main:
-    banner-mode: off
 
 logging:
   level:
@@ -28,11 +23,10 @@ app:
     create-vdc-queue: VIRTUALCARD_REQUEST
     create-vdc-queue-retry: VIRTUALCARD_REQUEST_RETRY
 
-    fee-charge-queue: VIRTUALCARD_FEE_CHARGE
-    fee-charge-queue-retry: VIRTUALCARD_FEE_CHARGE_RETRY
-
     error-vdc-queue: VIRTUALCARD_VDC_ERROR
     error-vdc-queue-retry: VIRTUALCARD_VDC_ERROR_RETRY
 
     exchange: VIRTUALCARD_EXCHANGE
-    
+
+    retry: 2
+    time-to-live: 10000

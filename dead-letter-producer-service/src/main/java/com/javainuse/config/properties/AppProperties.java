@@ -23,12 +23,11 @@ public class AppProperties {
         private String createVdcQueue;
         private String createVdcQueueRetry;
 
-        private String feeChargeQueueRetry;
-        private String feeChargeQueue;
-
         private String errorVdcQueue;
         private String errorVdcQueueRetry;
 
+        private int retry;
+        private int timeToLive;
     }
 
 }
