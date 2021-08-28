@@ -62,18 +62,12 @@ public class RabbitMQSender {
     public void send(Employee employee) {
 
         rabbitTemplate.convertAndSend(appProperties.getRabbitmq().getExchange(),
-                appProperties.getRabbitmq().getCreateVdcQueue(), employee);
+                appProperties.getRabbitmq().getCreateVdcQueue(), employee, employee.getCorrelationData());
         logger.info("Send msg = " + employee);
 
     }
 
-    public void send(CardServiceRequestDTO cardServiceRequestDTO) {
 
-        rabbitTemplate.convertAndSend(appProperties.getRabbitmq().getExchange(),
-                appProperties.getRabbitmq().getCreateVdcQueue(), cardServiceRequestDTO);
-        logger.info("Send msg = " + cardServiceRequestDTO);
-
-    }
 
     public void send(CardRequest cardRequest, String... wrongExchange) {
         if (wrongExchange.length == 1) {

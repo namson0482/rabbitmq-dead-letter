@@ -1,11 +1,13 @@
 package com.javainuse.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.javainuse.common.CommonUtil;
 import com.javainuse.config.properties.AppProperties;
 import com.javainuse.model.Employee;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
+import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,25 +23,25 @@ public class RabbitMQConsumer {
 	private final RabbitTemplate rabbitTemplate;
 
 	private final AppProperties appProperties;
+
+	private final ObjectMapper objectMapper;
 	
 	@Autowired
-    public RabbitMQConsumer(RabbitTemplate rabbitTemplate, AppProperties appProperties) {
+    public RabbitMQConsumer(RabbitTemplate rabbitTemplate, AppProperties appProperties, ObjectMapper objectMapper) {
         this.rabbitTemplate = rabbitTemplate;
         this.appProperties = appProperties;
-    }
+		this.objectMapper = objectMapper;
+	}
 	
 	private void putIntoParkingLot(Message failedMessage) {
 		
         log.info("Retries exeeded putting into parking lot");
-        ObjectMapper objectMapper = new ObjectMapper();
         try {
-			Employee employee = objectMapper.readValue(new String(failedMessage.getBody()), Employee.class);
-			log.info("Recieved Message From RabbitMQ: " + employee);
+			String str = new String(failedMessage.getBody());
 			this.rabbitTemplate.convertAndSend(appProperties.getRabbitmq().getExchange(),
-					appProperties.getRabbitmq().getErrorVdcQueue(), employee);
+					appProperties.getRabbitmq().getErrorVdcQueue(), str);
 		} catch (Exception e) {
 		} 
-//        this.rabbitTemplate.send("VIRTUALCARD_CREATE_VDC_ERROR", failedMessage);
     }
 
 	private boolean hasExceededRetryCount(Message in) {
@@ -47,20 +49,25 @@ public class RabbitMQConsumer {
 		if (xDeathHeader != null && xDeathHeader.size() >= 1) {
 			Long count = (Long) xDeathHeader.get(0).get("count");
 			log.info("Count: " + count);
-			return count >= 3;
+			return count >= appProperties.getRabbitmq().getRetry();
 		}
-
 		return false;
 	}
 
 	@RabbitListener(queues = "${app.rabbitmq.create-vdc-queue}")
-	public void recievedMessage(String str, Channel channel, Message in) throws Exception {
+	public void receivedMessage(String str, Channel channel, Message in) throws Exception {
 
 		if (hasExceededRetryCount(in)) {
 			putIntoParkingLot(in);
 			return;
 		}
-		channel.basicAck(in.getMessageProperties().getDeliveryTag(), false);
-		log.info("Recieved Message From RabbitMQ: " + new String(in.getBody()));
+		log.info("Received Message From RabbitMQ: " + str);
+		try {
+			if(CommonUtil.isException(objectMapper, str)) {
+				throw new Exception("Exception retry");
+			}
+		} catch (Exception e) {
+			throw new Exception(e.getMessage());
+		}
 	}
 }

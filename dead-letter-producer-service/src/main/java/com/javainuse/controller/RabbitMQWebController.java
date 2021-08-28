@@ -34,13 +34,6 @@ public class RabbitMQWebController {
 		return "Message sent to the RabbitMQ JavaInUse Successfully";
 	}
 
-	@PostMapping(value = "/producer")
-	public String producer(@RequestBody CardServiceRequestDTO cardServiceRequestDTO) {
-	
-		rabbitMQSender.send(cardServiceRequestDTO);
-		return "Message sent to the RabbitMQ JavaInUse Successfully";
-	}
-
 	@PostMapping(value = "/card_service")
 	public String producer(@RequestBody CardRequest cardRequest) throws JsonProcessingException {
 
