@@ -4,7 +4,9 @@
 *.project
 *.settings
 *.classpath
-target/**
+/target/*/*
+*/target/**
+**/META-INF/
 
 # Log file
 *.log
