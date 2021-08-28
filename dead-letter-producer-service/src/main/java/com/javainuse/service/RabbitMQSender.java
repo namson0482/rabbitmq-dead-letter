@@ -2,9 +2,7 @@ package com.javainuse.service;
 
 import com.javainuse.config.properties.AppProperties;
 import com.javainuse.model.CardRequest;
-import com.javainuse.model.CardServiceRequestDTO;
 import com.javainuse.model.CorrelationDataWithMessage;
-import com.javainuse.model.Employee;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,16 +56,6 @@ public class RabbitMQSender {
                 .setCorrelationDataPostProcessor((message, correlationData) -> new CorrelationDataWithMessage(
                         correlationData != null ? correlationData.getId() : null, message));
     }
-
-    public void send(Employee employee) {
-
-        rabbitTemplate.convertAndSend(appProperties.getRabbitmq().getExchange(),
-                appProperties.getRabbitmq().getCreateVdcQueue(), employee, employee.getCorrelationData());
-        logger.info("Send msg = " + employee);
-
-    }
-
-
 
     public void send(CardRequest cardRequest, String... wrongExchange) {
         if (wrongExchange.length == 1) {

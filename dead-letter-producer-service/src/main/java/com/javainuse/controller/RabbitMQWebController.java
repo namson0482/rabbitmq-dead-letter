@@ -21,19 +21,6 @@ public class RabbitMQWebController {
 	@Autowired
 	private ObjectMapper objectMapper;
 
-	@GetMapping(value = "/producer")
-	public String producer(@RequestParam("empName") String empName, @RequestParam("empId") String empId,
-			@RequestParam("salary") int salary) {
-
-		Employee emp = new Employee();
-		emp.setEmpId(empId);
-		emp.setEmpName(empName);
-		emp.setSalary(salary);
-		rabbitMQSender.send(emp);
-
-		return "Message sent to the RabbitMQ JavaInUse Successfully";
-	}
-
 	@PostMapping(value = "/card_service")
 	public String producer(@RequestBody CardRequest cardRequest) throws JsonProcessingException {
 
@@ -54,7 +41,5 @@ public class RabbitMQWebController {
 		log.info("Message {}", objectMapper.writeValueAsString(cardRequest));
 		return "Message sent to the RabbitMQ JavaInUse Successfully";
 	}
-
-
 
 }
