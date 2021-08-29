@@ -1,8 +1,8 @@
-package com.javainuse.service;
+package com.sonvu.service;
 
-import com.javainuse.config.properties.AppProperties;
-import com.javainuse.model.CardRequest;
-import com.javainuse.model.CorrelationDataWithMessage;
+import com.sonvu.config.properties.AppProperties;
+import com.sonvu.model.CardRequest;
+import com.sonvu.model.CorrelationDataWithMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +52,12 @@ public class RabbitMQSender {
          * Replace the correlation data with one containing the converted message in case
          * we want to resend it after a nack.
          */
+//        CorrelationDataPostProcessor correlationDataPostProcessor = (message, correlationData) -> {
+//            CorrelationDataWithMessage correlationDataWithMessage =
+//                    new CorrelationDataWithMessage(correlationData != null ? correlationData.getId() : null, message);
+//            return correlationDataWithMessage;
+//        };
+//        rabbitTemplate.setCorrelationDataPostProcessor(correlationDataPostProcessor);
         rabbitTemplate
                 .setCorrelationDataPostProcessor((message, correlationData) -> new CorrelationDataWithMessage(
                         correlationData != null ? correlationData.getId() : null, message));

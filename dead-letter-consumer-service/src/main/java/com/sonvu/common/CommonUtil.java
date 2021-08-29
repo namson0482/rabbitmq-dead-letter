@@ -1,4 +1,4 @@
-package com.javainuse.common;
+package com.sonvu.common;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

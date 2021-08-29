@@ -1,4 +1,4 @@
-package com.javainuse.model;
+package com.sonvu.model;
 
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.connection.CorrelationData;

@@ -1,4 +1,4 @@
-package com.javainuse.model;
+package com.sonvu.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

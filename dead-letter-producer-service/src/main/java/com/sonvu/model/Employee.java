@@ -1,7 +1,10 @@
-package com.javainuse.model;
+package com.sonvu.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import org.springframework.amqp.rabbit.connection.CorrelationData;
+
+import java.util.UUID;
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@id", scope = Employee.class)
 public class Employee {
@@ -26,11 +29,6 @@ public class Employee {
 		this.empId = empId;
 	}
 
-	@Override
-	public String toString() {
-		return "Employee [empName=" + empName + ", empId=" + empId + ", salary=" + salary + "]";
-	}
-
 	public int getSalary() {
 		return salary;
 	}
@@ -39,4 +37,14 @@ public class Employee {
 		this.salary = salary;
 	}
 
+	public CorrelationData getCorrelationData() {
+		String uniqueID = UUID.randomUUID().toString();
+		return new CorrelationData(empId + "|" + uniqueID);
+	}
+
+	@Override
+	public String toString() {
+		return "Employee [empName=" + empName + ", empId=" + empId + ", salary=" + salary + "]";
+	}
+	
 }

@@ -1,4 +1,4 @@
-package com.javainuse;
+package com.sonvu;
 
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.boot.SpringApplication;

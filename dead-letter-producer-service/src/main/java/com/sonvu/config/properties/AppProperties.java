@@ -1,4 +1,4 @@
-package com.javainuse.config.properties;
+package com.sonvu.config.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -31,3 +31,4 @@ public class AppProperties {
     }
 
 }
+

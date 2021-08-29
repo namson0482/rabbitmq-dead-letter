@@ -1,9 +1,9 @@
-package com.javainuse.service;
+package com.sonvu.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.javainuse.common.CommonUtil;
-import com.javainuse.config.properties.AppProperties;
-import com.javainuse.exception.BusinessException;
+import com.sonvu.common.CommonUtil;
+import com.sonvu.config.properties.AppProperties;
+import com.sonvu.exception.BusinessException;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
@@ -60,7 +60,8 @@ public class RabbitMQConsumer {
 			putIntoParkingLot(in);
 			return;
 		}
-		log.info("Received Message From RabbitMQ: " + str);
+		log.info("Received Message: " + str);
+		log.info("Channel {} Delivery Tag {}", channel.getChannelNumber(), in.getMessageProperties().getDeliveryTag());
 		try {
 			if(CommonUtil.isException(objectMapper, str)) {
 				throw new BusinessException("Exception retry");

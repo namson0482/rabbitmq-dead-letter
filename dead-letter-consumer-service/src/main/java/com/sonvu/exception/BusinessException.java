@@ -1,4 +1,4 @@
-package com.javainuse.exception;
+package com.sonvu.exception;
 
 import lombok.NoArgsConstructor;
 

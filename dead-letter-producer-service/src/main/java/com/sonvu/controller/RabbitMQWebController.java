@@ -1,11 +1,9 @@
-package com.javainuse.controller;
+package com.sonvu.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.javainuse.model.CardRequest;
-import com.javainuse.model.CardServiceRequestDTO;
-import com.javainuse.model.Employee;
-import com.javainuse.service.RabbitMQSender;
+import com.sonvu.model.CardRequest;
+import com.sonvu.service.RabbitMQSender;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

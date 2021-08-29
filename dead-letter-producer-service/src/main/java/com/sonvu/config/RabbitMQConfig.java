@@ -1,9 +1,7 @@
-package com.javainuse.config;
+package com.sonvu.config;
 
-import com.javainuse.config.properties.AppProperties;
+import com.sonvu.config.properties.AppProperties;
 import lombok.AllArgsConstructor;
-import org.springframework.amqp.core.*;
-import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
