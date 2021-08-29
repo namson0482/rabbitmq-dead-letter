@@ -34,12 +34,9 @@ public class RabbitMQWebController {
 	public String producer(@RequestBody CardRequest cardRequest,
 						   @PathVariable(name = "wrongExchange",required = false) String wrongExchange) throws JsonProcessingException {
 
-		if(wrongExchange==null)
-			rabbitMQSender.send(cardRequest);
-		else
-			rabbitMQSender.send(cardRequest, wrongExchange);
+		if(wrongExchange==null) rabbitMQSender.send(cardRequest);
+		else rabbitMQSender.send(cardRequest, wrongExchange);
 		log.info("Message {}", objectMapper.writeValueAsString(cardRequest));
 		return "Message sent to the RabbitMQ JavaInUse Successfully";
 	}
-
 }

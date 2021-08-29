@@ -3,6 +3,7 @@ package com.javainuse.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.javainuse.common.CommonUtil;
 import com.javainuse.config.properties.AppProperties;
+import com.javainuse.exception.BusinessException;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
@@ -53,7 +54,7 @@ public class RabbitMQConsumer {
 	}
 
 	@RabbitListener(queues = "${app.rabbitmq.create-vdc-queue}")
-	public void receivedMessage(String str, Channel channel, Message in) throws Exception {
+	public void receivedMessage(String str, Channel channel, Message in) throws BusinessException {
 
 		if (hasExceededRetryCount(in)) {
 			putIntoParkingLot(in);
@@ -62,10 +63,10 @@ public class RabbitMQConsumer {
 		log.info("Received Message From RabbitMQ: " + str);
 		try {
 			if(CommonUtil.isException(objectMapper, str)) {
-				throw new Exception("Exception retry");
+				throw new BusinessException("Exception retry");
 			}
 		} catch (Exception e) {
-			throw new Exception(e.getMessage());
+			throw new BusinessException(e.getMessage());
 		}
 	}
 }

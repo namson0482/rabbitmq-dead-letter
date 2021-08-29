@@ -8,6 +8,10 @@ spring:
       simple:
         default-requeue-rejected: false
         acknowledge-mode: auto
+        missingQueuesFatal: false
+        max-concurrency: 4
+        concurrency: 3
+
 server:
   port: 8081
 logging:
