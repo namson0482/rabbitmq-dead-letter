@@ -32,3 +32,6 @@ hs_err_pid*
 .idea/
 *.iml
 *.iws
+/dead-letter-consumer-service/
+/dead-letter-producer-service/
+/dead-letter-consumer-service/

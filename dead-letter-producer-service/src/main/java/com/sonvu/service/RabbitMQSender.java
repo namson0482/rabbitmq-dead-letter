@@ -3,9 +3,9 @@ package com.sonvu.service;
 import com.sonvu.config.properties.AppProperties;
 import com.sonvu.model.CardRequest;
 import com.sonvu.model.CorrelationDataWithMessage;
+import com.sonvu.model.message.WebHookMessage;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,9 +13,6 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class RabbitMQSender {
-
-    private static final Logger logger = LoggerFactory.getLogger(RabbitMQSender.class);
-
 
     private final AppProperties appProperties;
 
@@ -52,12 +49,6 @@ public class RabbitMQSender {
          * Replace the correlation data with one containing the converted message in case
          * we want to resend it after a nack.
          */
-//        CorrelationDataPostProcessor correlationDataPostProcessor = (message, correlationData) -> {
-//            CorrelationDataWithMessage correlationDataWithMessage =
-//                    new CorrelationDataWithMessage(correlationData != null ? correlationData.getId() : null, message);
-//            return correlationDataWithMessage;
-//        };
-//        rabbitTemplate.setCorrelationDataPostProcessor(correlationDataPostProcessor);
         rabbitTemplate
                 .setCorrelationDataPostProcessor((message, correlationData) -> new CorrelationDataWithMessage(
                         correlationData != null ? correlationData.getId() : null, message));
@@ -72,10 +63,19 @@ public class RabbitMQSender {
             }
             rabbitTemplate.convertAndSend(exchange, routingKey, cardRequest, cardRequest.getCorrelationData());
         } else {
-            rabbitTemplate.convertAndSend(appProperties.getRabbitmq().getExchange(),
-                    appProperties.getRabbitmq().getCreateVdcQueue(), cardRequest, cardRequest.getCorrelationData());
+            try {
+                rabbitTemplate.convertAndSend(appProperties.getRabbitmq().getExchange(),
+                        appProperties.getRabbitmq().getCreateVdcQueue(), cardRequest, cardRequest.getCorrelationData());
+            } catch (AmqpException e) {
+                log.info("Connection exception");
+            }
         }
-        logger.info("Send msg = " + cardRequest);
+        log.info("Send msg = " + cardRequest);
     }
 
+    public void send(WebHookMessage webHookMessage) {
+        rabbitTemplate.convertAndSend(appProperties.getRabbitmq().getExchange(),
+                appProperties.getRabbitmq().getCreateVdcQueue(), webHookMessage, webHookMessage.getCorrelationData());
+        log.info("Send msg = " + webHookMessage);
+    }
 }
